@@ -1,6 +1,8 @@
 import styled from "styled-components"
 import { Header } from "./components/Header"
 import { Outlet } from "react-router"
+import { ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
   display: flex;
@@ -9,11 +11,11 @@ const Container = styled.div`
   margin: 24px auto;
 `
 
-
 const RootLayout = () => {
 
     return (
         <>
+            <ToastContainer />
             <Header />
             <Container>
                 <Outlet />

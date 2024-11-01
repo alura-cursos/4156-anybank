@@ -8,12 +8,18 @@ import { Dropdown } from "../../components/Dropdown"
 import { ListTransactionType } from "../../domain/useCases/ListTransactionType"
 import { TransactionTypeSupabaseRepository } from "../../infra/supabase/TransactionTypeSupabaseRepository"
 import { ITransactionType } from "../../domain/entities/ITransactionType"
+import { CreateTransaction } from "../../domain/useCases/CreateTransaction"
+import { TransactionSupabaseRepository } from "../../infra/supabase/TransactionSupabaseRepository"
+import { useAuthContext } from "../../app/hooks/useAuthContext"
+import { toast } from "react-toastify"
 
 const listTransactionTypes = new ListTransactionType(new TransactionTypeSupabaseRepository())
+const createTransaction = new CreateTransaction(new TransactionSupabaseRepository())
 
 export const TransactionForm = () => {
 
     const [transactionTypes, setTransactionTypes] = useState<ITransactionType[]>([])
+    const { session } = useAuthContext()
 
     useEffect(() => {
         listTransactionTypes.execute()
@@ -21,20 +27,31 @@ export const TransactionForm = () => {
     }, [])
 
     const [transactionType, setTransactionType] = useState('')
-    const [transactionValue, setSetTransactionValue] = useState('')
+    const [transactionValue, setTransactionValue] = useState('')
 
-    const createTransacion = (evt: React.FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
         evt.preventDefault()
         console.log({
             transactionType,
             transactionValue
         })
+        if (session) {
+            try {
+                await createTransaction.execute(parseFloat(transactionValue), parseInt(transactionType), session.user.id)
+                setTransactionValue('')
+                setTransactionType('')
+                toast.success('Transação cadastrada com sucesso!')
+            } catch (error) {
+                console.log('Falha ao cadastrar', error)
+                toast.error('Não foi possível cadastrar a transação')
+            }
+        }
     }
 
     return (
         <Card>
             <Wrapper>
-                <Form onSubmit={createTransacion}>
+                <Form onSubmit={handleFormSubmit}>
                     <Heading>
                         Nova transação
                     </Heading>
@@ -61,7 +78,7 @@ export const TransactionForm = () => {
                             placeholder="R$ 00,00"
                             type="number"
                             value={transactionValue}
-                            onChange={evt => setSetTransactionValue(evt.target.value)}
+                            onChange={evt => setTransactionValue(evt.target.value)}
                             required
                         />
                     </fieldset>

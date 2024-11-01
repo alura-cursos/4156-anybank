@@ -1,12 +1,24 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Form, Heading, Wrapper } from "./styles"
 import { Button } from "../../components/Button"
 import { Card } from "../../components/Card"
 import { TextField } from "../../components/TextField"
 import { FormLabel } from "../../components/FormLabel"
 import { Dropdown } from "../../components/Dropdown"
+import { ListTransactionType } from "../../domain/useCases/ListTransactionType"
+import { TransactionTypeSupabaseRepository } from "../../infra/supabase/TransactionTypeSupabaseRepository"
+import { ITransactionType } from "../../domain/entities/ITransactionType"
+
+const listTransactionTypes = new ListTransactionType(new TransactionTypeSupabaseRepository())
 
 export const TransactionForm = () => {
+
+    const [transactionTypes, setTransactionTypes] = useState<ITransactionType[]>([])
+
+    useEffect(() => {
+        listTransactionTypes.execute()
+            .then(data => setTransactionTypes(data))
+    }, [])
 
     const [transactionType, setTransactionType] = useState('')
     const [transactionValue, setSetTransactionValue] = useState('')
@@ -38,7 +50,7 @@ export const TransactionForm = () => {
                             <option value="" disabled hidden>
                                 Selecione o tipo de transação
                             </option>
-                            <option value="saque">Saque</option>
+                            {transactionTypes.map(t => <option value={t.id} key={t.id}>{t.display}</option>)}
                         </Dropdown>
                     </fieldset>
                     <fieldset>

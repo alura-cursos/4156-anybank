@@ -3,11 +3,15 @@ import { Button } from "../Button"
 import { IconAvatar, IconLogo } from "../Icons"
 import { TransparentButton } from "../TransparentButton"
 import { Container, StyledHeader, List, ListItem } from "./styles"
+import { useAuthContext } from "../../app/hooks/useAuthContext"
 
 export const Header = () => {
 
+    const { logout } = useAuthContext()
+
     const onAskForLogout = () => {
         console.log('logout')
+        logout()
     }
 
     return (<StyledHeader>

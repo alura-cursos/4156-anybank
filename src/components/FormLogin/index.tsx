@@ -4,13 +4,13 @@ import { Fieldset } from "../Fieldset";
 import { Figure, Form, FormActions, Heading, Image } from "../Form";
 import { FormLabel } from "../FormLabel";
 import { TextField } from "../TextField";
+import { useAuthContext } from "../../app/hooks/useAuthContext";
+import { toast } from "react-toastify";
 
-interface FormLoginProps {
-    onLogin: () => void
-}
-
-export const FormLogin = ({ onLogin }: FormLoginProps) => {
+export const FormLogin = () => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
+
+    const { login } = useAuthContext()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -20,10 +20,16 @@ export const FormLogin = ({ onLogin }: FormLoginProps) => {
         }));
     };
 
-    const loginUser = (evt: React.FormEvent<HTMLFormElement>) => {
+    const loginUser = async (evt: React.FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
-        console.log(credentials);
-        onLogin()
+        try {
+            await login(credentials.email, credentials.password)
+            toast.success('Boas vindas ao Anybank!')
+
+        } catch (error) {
+            console.log('Falha ao efetuar login!', error)
+            toast.error('Falha ao efetuar login, confirme seu e-mail e senha.')
+        }
     };
 
     return (

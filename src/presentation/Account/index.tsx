@@ -1,4 +1,4 @@
-import { Balance } from "./Balance";
+import { Balance } from "../Balance";
 import { Card, DateWrapper, GreetingWrapper, Heading } from "./styles"
 
 const options: Intl.DateTimeFormatOptions = {

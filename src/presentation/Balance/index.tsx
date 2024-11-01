@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { IconEye } from "../Icons";
+import { IconEye } from "../../components/Icons";
 
 const formatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',

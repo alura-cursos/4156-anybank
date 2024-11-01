@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { Form, Heading, Wrapper } from "./styles"
-import { Button } from "../Button"
-import { Card } from "../Card"
-import { TextField } from "../TextField"
-import { FormLabel } from "../FormLabel"
-import { Dropdown } from "../Dropdown"
+import { Button } from "../../components/Button"
+import { Card } from "../../components/Card"
+import { TextField } from "../../components/TextField"
+import { FormLabel } from "../../components/FormLabel"
+import { Dropdown } from "../../components/Dropdown"
 
 export const TransactionForm = () => {
 

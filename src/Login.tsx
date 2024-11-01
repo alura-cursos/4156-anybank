@@ -4,7 +4,7 @@ const Login = () => {
 
   return (
     <>
-      <FormLogin onLogin={() => console.log('login')} />
+      <FormLogin />
     </>
   )
 }

@@ -14,6 +14,7 @@ export const AuthContext = createContext<IAuthContext | undefined>(undefined)
 export const AuthProvider = ({ children } : { children: ReactNode }) => {
 
     const [session, setSession] = useState<Session | null>(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
       supabase.auth.getSession()
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children } : { children: ReactNode }) => {
             setSession(session)
             console.log('getSession', session)
         })
+        .finally(() => setLoading(false))
 
       const {
         data: { subscription },
@@ -48,7 +50,7 @@ export const AuthProvider = ({ children } : { children: ReactNode }) => {
 
     return (
         <AuthContext.Provider value={{ session, logout, login }}>
-            {children}
+            {loading ? 'carregando...' : children}
         </AuthContext.Provider>
     )
 }

@@ -12,11 +12,16 @@ import { CreateTransaction } from "../../domain/useCases/CreateTransaction"
 import { TransactionSupabaseRepository } from "../../infra/supabase/TransactionSupabaseRepository"
 import { useAuthContext } from "../../app/hooks/useAuthContext"
 import { toast } from "react-toastify"
+import { ITransaction } from "../../domain/entities/ITransaction"
 
 const listTransactionTypes = new ListTransactionType(new TransactionTypeSupabaseRepository())
 const createTransaction = new CreateTransaction(new TransactionSupabaseRepository())
 
-export const TransactionForm = () => {
+interface TransactionFormProps {
+    onRegister: (transaction:ITransaction) => void
+}
+
+export const TransactionForm = ({ onRegister } : TransactionFormProps) => {
 
     const [transactionTypes, setTransactionTypes] = useState<ITransactionType[]>([])
     const { session } = useAuthContext()
@@ -37,10 +42,11 @@ export const TransactionForm = () => {
         })
         if (session) {
             try {
-                await createTransaction.execute(parseFloat(transactionValue), parseInt(transactionType), session.user.id)
+                const transaction = await createTransaction.execute(parseFloat(transactionValue), parseInt(transactionType), session.user.id)
                 setTransactionValue('')
                 setTransactionType('')
                 toast.success('Transação cadastrada com sucesso!')
+                onRegister(transaction)
             } catch (error) {
                 console.log('Falha ao cadastrar', error)
                 toast.error('Não foi possível cadastrar a transação')
